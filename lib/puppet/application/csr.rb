@@ -1,6 +1,6 @@
 require 'puppet/application/face_base'
 
-class Puppet::Application::Bootstrap < Puppet::Application::FaceBase
+class Puppet::Application::Csr < Puppet::Application::FaceBase
   def app_defaults
     super.merge({
       :catalog_terminus => :rest,

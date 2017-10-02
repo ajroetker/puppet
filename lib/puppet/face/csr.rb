@@ -3,7 +3,7 @@ require 'puppet/ssl'
 
 module PuppetX
   module Puppetlabs
-    module Bootstrap
+    module Csr
       def verify_signed_cert!(hostcert)
         if !hostcert.nil?
           Puppet.notice "Found a certificate for #{Puppet[:certname]}"
@@ -36,11 +36,11 @@ module PuppetX
   end
 end
 
-Puppet::Face.define(:bootstrap, '0.1.0') do
+Puppet::Face.define(:csr, '0.1.0') do
   copyright "Puppet", 2017
   summary "Initialize the Puppet agent"
 
-  action(:csr) do
+  action(:generate) do
     summary "Initialize the agent key pair and save a CSR"
 
     when_invoked do |opts|
@@ -72,7 +72,7 @@ Puppet::Face.define(:bootstrap, '0.1.0') do
     summary "Verify that the Puppet agent has a signed certificate"
 
     when_invoked do |opts|
-      extend PuppetX::Puppetlabs::Bootstrap
+      extend PuppetX::Puppetlabs::Csr
       hostcert = Puppet::SSL::Certificate.indirection.find(Puppet[:certname])
       hostkey = Puppet::SSL::Key.indirection.find(Puppet[:certname])
 

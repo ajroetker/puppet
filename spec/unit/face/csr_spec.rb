@@ -3,10 +3,10 @@ require 'puppet_spec/files'
 
 require 'puppet/face'
 
-describe Puppet::Face[:bootstrap, '0.1.0'] do
+describe Puppet::Face[:csr, '0.1.0'] do
   include PuppetSpec::Files
 
-  let(:bootstrap) { Puppet::Face[:bootstrap, '0.1.0'] }
+  let(:csr) { Puppet::Face[:csr, '0.1.0'] }
   let(:certificate) { Puppet::Face[:certificate, '0.0.1'] }
   let(:hostname) { Puppet[:certname] }
   let(:options) { {:ca_location => 'local'} }
@@ -26,9 +26,10 @@ describe Puppet::Face[:bootstrap, '0.1.0'] do
 
   context "csr" do
     it "initializes agent key pair and saves a CSR" do
-      # Because we're the CA, calling bootstrap csr will autosign the cert_request that bootstrap csr generates
-      expect { bootstrap.csr()  }.to_not raise_error
-      expect { bootstrap.verify()  }.to_not raise_error
+      # Because we're the CA, calling `puppet csr generate` will autosign the
+      # certificate request
+      expect { csr.generate()  }.to_not raise_error
+      expect { csr.verify()  }.to_not raise_error
     end
   end
 
@@ -36,7 +37,7 @@ describe Puppet::Face[:bootstrap, '0.1.0'] do
     it "verifies an agent has a signed cert" do
       certificate.generate(hostname, options)
       certificate.sign(hostname, options)
-      expect { bootstrap.verify() }.to_not raise_error
+      expect { csr.verify() }.to_not raise_error
     end
   end
 
@@ -44,13 +45,13 @@ describe Puppet::Face[:bootstrap, '0.1.0'] do
     it "purges correctly" do
       certificate.generate(different_hostname, options)
       certificate.sign(different_hostname, options)
-      expect { bootstrap.verify() }.to raise_error(SystemExit)
+      expect { csr.verify() }.to raise_error(SystemExit)
 
-      expect { bootstrap.purge() }.to_not raise_error
+      expect { csr.purge() }.to_not raise_error
 
       certificate.generate(hostname, options)
       certificate.sign(hostname, options)
-      expect { bootstrap.verify() }.to_not raise_error
+      expect { csr.verify() }.to_not raise_error
     end
   end
 end
