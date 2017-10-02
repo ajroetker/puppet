@@ -13,6 +13,7 @@ describe Puppet::Face[:csr, '0.1.0'] do
   let(:different_hostname) { hostname + 'different' }
 
   before :each do
+    Puppet::SSL::Host.reset
     Puppet[:confdir] = tmpdir('conf')
     Puppet::SSL::CertificateAuthority.stubs(:ca?).returns true
 
