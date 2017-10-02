@@ -37,7 +37,8 @@ module PuppetX
 end
 
 Puppet::Face.define(:csr, '0.1.0') do
-  copyright "Puppet", 2017
+  copyright "Puppet Inc.", 2017
+  license   _("Apache 2 license; see COPYING")
   summary "Initialize the Puppet agent"
 
   action(:generate) do
